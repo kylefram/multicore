@@ -1,0 +1,17 @@
+Test SB3+fen Allowed
+States 7
+0:X3=0; 1:X3=0; 2:X3=1;
+0:X3=0; 1:X3=1; 2:X3=0;
+0:X3=0; 1:X3=1; 2:X3=1;
+0:X3=1; 1:X3=0; 2:X3=0;
+0:X3=1; 1:X3=0; 2:X3=1;
+0:X3=1; 1:X3=1; 2:X3=0;
+0:X3=1; 1:X3=1; 2:X3=1;
+No
+Witnesses
+Positive: 0 Negative: 7
+Condition exists (0:X3=0 /\ 1:X3=0 /\ 2:X3=0)
+Observation SB3+fen Never 0 7
+Time SB3+fen 0.01
+Hash=af8ef14ca36cdca9dcec373504dd21e5
+

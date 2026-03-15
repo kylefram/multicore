@@ -1,0 +1,18 @@
+Test SB3 Allowed
+States 8
+0:X3=0; 1:X3=0; 2:X3=0;
+0:X3=0; 1:X3=0; 2:X3=1;
+0:X3=0; 1:X3=1; 2:X3=0;
+0:X3=0; 1:X3=1; 2:X3=1;
+0:X3=1; 1:X3=0; 2:X3=0;
+0:X3=1; 1:X3=0; 2:X3=1;
+0:X3=1; 1:X3=1; 2:X3=0;
+0:X3=1; 1:X3=1; 2:X3=1;
+Ok
+Witnesses
+Positive: 1 Negative: 7
+Condition exists (0:X3=0 /\ 1:X3=0 /\ 2:X3=0)
+Observation SB3 Sometimes 1 7
+Time SB3 0.01
+Hash=538871abd7556401017a12c13ec7d468
+

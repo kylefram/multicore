@@ -1,0 +1,91 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Results for SB3+fen.litmus %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+AArch64 SB3+fen
+"DMB.SYdWR Fre DMB.SYdWR Fre DMB.SYdWR Fre"
+
+{
+ 0:X1=x; 0:X2=y;
+ 1:X1=y; 1:X2=z;
+ 2:X1=z; 2:X2=x;
+}
+ P0          | P1          | P2          ;
+ MOV W0,#1   | MOV W0,#1   | MOV W0,#1   ;
+ STR W0,[X1] | STR W0,[X1] | STR W0,[X1] ;
+ DMB SY      | DMB SY      | DMB SY      ;
+ LDR W3,[X2] | LDR W3,[X2] | LDR W3,[X2] ;
+
+exists (0:X3=0 /\ 1:X3=0 /\ 2:X3=0)
+Generated assembler
+	;START _litmus_P0
+	mov	w1, #1                          ; =0x1
+	str	w1, [x16]
+	dmb	sy
+	ldr	w0, [x17]
+	;START _litmus_P1
+	mov	w1, #1                          ; =0x1
+	str	w1, [x16]
+	dmb	sy
+	ldr	w0, [x17]
+	;START _litmus_P2
+	mov	w1, #1                          ; =0x1
+	str	w1, [x16]
+	dmb	sy
+	ldr	w0, [x17]
+
+Test SB3+fen Allowed
+Histogram (7 states)
+14724712:>0:X3=1; 1:X3=0; 2:X3=0;
+15172160:>0:X3=0; 1:X3=1; 2:X3=0;
+18158465:>0:X3=1; 1:X3=1; 2:X3=0;
+15706702:>0:X3=0; 1:X3=0; 2:X3=1;
+18607962:>0:X3=1; 1:X3=0; 2:X3=1;
+17627836:>0:X3=0; 1:X3=1; 2:X3=1;
+2163  :>0:X3=1; 1:X3=1; 2:X3=1;
+No
+
+Witnesses
+Positive: 0, Negative: 100000000
+Condition exists (0:X3=0 /\ 1:X3=0 /\ 2:X3=0) is NOT validated
+Hash=af8ef14ca36cdca9dcec373504dd21e5
+Generator=diyone7 (version 7.58)
+Com=Fr Fr Fr
+Orig=DMB.SYdWR Fre DMB.SYdWR Fre DMB.SYdWR Fre
+Observation SB3+fen Never 0 100000000
+Time SB3+fen 12.40
+
+Machine:Kyles-MacBook-Pro.local
+Hardware:
+
+    Hardware Overview:
+
+      Model Name: MacBook Pro
+      Model Identifier: Mac16,5
+      Model Number: MX303B/A
+      Chip: Apple M4 Max
+      Total Number of Cores: 14 (10 performance and 4 efficiency)
+      Memory: 36 GB
+      System Firmware Version: 11881.81.4
+      OS Loader Version: 11881.81.4
+      Serial Number (system): C00C3JNQFV
+      Hardware UUID: 6B16ED3A-820B-5B1F-A79E-0B45691B2525
+      Provisioning UDID: 00006041-000849C90204801C
+      Activation Lock Status: Enabled
+
+Revision exported, version 7.58
+Command line: litmus7 SB3+fen.litmus -s 1k -r 100k
+Parameters
+#define SIZE_OF_TEST 1000
+#define NUMBER_OF_RUN 100000
+#define AVAIL 1
+#define STRIDE (-1)
+#define MAX_LOOP 0
+/* gcc options: -Wall -std=gnu99 -O2 */
+/* barrier: user */
+/* launch: changing */
+/* affinity: none */
+/* memory: direct */
+/* safer: write */
+/* preload: random */
+/* speedcheck: no */
+/* alloc: dynamic */

@@ -1,0 +1,79 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Results for SB.litmus %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+AArch64 SB
+"PodWR Fre PodWR Fre"
+
+{
+ 0:X1=x; 0:X2=y;
+ 1:X1=y; 1:X2=x;
+}
+ P0          | P1          ;
+ MOV W0,#1   | MOV W0,#1   ;
+ STR W0,[X1] | STR W0,[X1] ;
+ LDR W3,[X2] | LDR W3,[X2] ;
+
+exists (0:X3=0 /\ 1:X3=0)
+Generated assembler
+	;START _litmus_P0
+	mov	w0, #1                          ; =0x1
+	str	w0, [x15]
+	ldr	w17, [x16]
+	;START _litmus_P1
+	mov	w0, #1                          ; =0x1
+	str	w0, [x15]
+	ldr	w17, [x16]
+
+Test SB Allowed
+Histogram (4 states)
+234   *>0:X3=0; 1:X3=0;
+49999841:>0:X3=1; 1:X3=0;
+49999909:>0:X3=0; 1:X3=1;
+16    :>0:X3=1; 1:X3=1;
+Ok
+
+Witnesses
+Positive: 234, Negative: 99999766
+Condition exists (0:X3=0 /\ 1:X3=0) is validated
+Hash=0e1eb22a42a7de6af162a7e5cbb4e4d3
+Generator=diyone7 (version 7.58)
+Com=Fr Fr
+Orig=PodWR Fre PodWR Fre
+Observation SB Sometimes 234 99999766
+Time SB 7.70
+
+Machine:Kyles-MacBook-Pro.local
+Hardware:
+
+    Hardware Overview:
+
+      Model Name: MacBook Pro
+      Model Identifier: Mac16,5
+      Model Number: MX303B/A
+      Chip: Apple M4 Max
+      Total Number of Cores: 14 (10 performance and 4 efficiency)
+      Memory: 36 GB
+      System Firmware Version: 11881.81.4
+      OS Loader Version: 11881.81.4
+      Serial Number (system): C00C3JNQFV
+      Hardware UUID: 6B16ED3A-820B-5B1F-A79E-0B45691B2525
+      Provisioning UDID: 00006041-000849C90204801C
+      Activation Lock Status: Enabled
+
+Revision exported, version 7.58
+Command line: litmus7 SB.litmus -s 1k -r 100k
+Parameters
+#define SIZE_OF_TEST 1000
+#define NUMBER_OF_RUN 100000
+#define AVAIL 1
+#define STRIDE (-1)
+#define MAX_LOOP 0
+/* gcc options: -Wall -std=gnu99 -O2 */
+/* barrier: user */
+/* launch: changing */
+/* affinity: none */
+/* memory: direct */
+/* safer: write */
+/* preload: random */
+/* speedcheck: no */
+/* alloc: dynamic */

@@ -1,0 +1,13 @@
+Test SB+fen Allowed
+States 3
+0:X3=0; 1:X3=1;
+0:X3=1; 1:X3=0;
+0:X3=1; 1:X3=1;
+No
+Witnesses
+Positive: 0 Negative: 3
+Condition exists (0:X3=0 /\ 1:X3=0)
+Observation SB+fen Never 0 3
+Time SB+fen 0.01
+Hash=c6a533fb255005c1a89998321e552a86
+

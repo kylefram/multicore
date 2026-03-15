@@ -1,0 +1,13 @@
+Test SB+fen Allowed
+Memory-writes=
+States 3
+1     :>0:X3=0; 1:X3=1;  via "0;0;1;0"
+1     :>0:X3=1; 1:X3=0;  via "1;1;0;0"
+4     :>0:X3=1; 1:X3=1;  via "0;1;0;1"
+Unhandled exceptions 0
+
+No (allowed not found)
+Condition exists (0:X3=0 /\ 1:X3=0)
+Hash=c6a533fb255005c1a89998321e552a86
+Observation SB+fen Never 0 3
+Runtime: 0.090825 sec
