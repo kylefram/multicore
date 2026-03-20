@@ -1,0 +1,12 @@
+X86 S
+"PodWW Rfe PodRW Coe"
+Generator=diyone7 (version 7.58)
+Prefetch=0:x=F,0:y=W,1:y=F,1:x=W
+Com=Rf Co
+Orig=PodWW Rfe PodRW Coe
+{
+}
+ P0         | P1          ;
+ MOV [x],$2 | MOV EAX,[y] ;
+ MOV [y],$1 | MOV [x],$1  ;
+exists ([x]=2 /\ 1:EAX=1)

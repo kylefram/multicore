@@ -1,0 +1,13 @@
+Test S+fen+data-wsi Allowed
+States 3
+1:X1=0; 1:X3=0;
+1:X1=0; 1:X3=1;
+1:X1=1; 1:X3=1;
+No
+Witnesses
+Positive: 0 Negative: 3
+Condition exists (1:X1=1 /\ 1:X3=0)
+Observation S+fen+data-wsi Never 0 3
+Time S+fen+data-wsi 0.01
+Hash=6cd45049c39f769e3371a253e6fa3e5c
+

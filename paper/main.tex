@@ -38,6 +38,8 @@
 \usepackage{subcaption}
 \usepackage{courier}
 \usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 
 %%%%%%%
@@ -107,20 +109,22 @@ numbersep=0.5cm
 
 
 % part 1
-%\input{sources/1}
+\input{sources/1}
 \newpage
-%\input{sources/2}
+\input{sources/2}
 \newpage
-%\input{sources/3}
+\input{sources/3}
 \newpage
-%\input{sources/4}
+\input{sources/4}
+\newpage
+\input{sources/appendix.tex}
 \newpage
 \addcontentsline{toc}{section}{References}
 \fancyfoot[C]{Page \thepage\ of \pageref{endOfDoc}}
+\nocite{*}
 \bibliography{document.bib} 
 \bibliographystyle{ieeetr}
 
-\newpage
 \input{}
 
 
@@ -128,15 +132,15 @@ numbersep=0.5cm
 
 \newpage
 \pagenumbering{Roman} 
-% \addcontentsline{toc}{section}{List of Figures}
-% \fancyfoot[C]{Page \thepage\ of \pageref{endOfDoc}}
-% \listoffigures
-% \thispagestyle{fancy}
+\addcontentsline{toc}{section}{List of Figures}
+\fancyfoot[C]{Page \thepage\ of \pageref{endOfDoc}}
+\listoffigures
+\thispagestyle{fancy}
 
-% \newpage
-% \addcontentsline{toc}{section}{List of Tables}
-% \listoftables
-% \thispagestyle{fancy}
+\newpage
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+\thispagestyle{fancy}
 
 \label{endOfDoc}
 \end{document}

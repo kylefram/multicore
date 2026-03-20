@@ -1,0 +1,12 @@
+\begin{thebibliography}{1}
+
+\bibitem{alglave2014herding}
+J.~Alglave, L.~Maranget, and M.~Tautschnig, ``Herding cats: Modelling, declarative testing, and empirical evaluation of weak memory,'' in {\em ACM SIGPLAN Notices}, vol.~49, pp.~7--17, ACM, 2014.
+
+\bibitem{harris2001pragmatic}
+T.~L. Harris, ``A pragmatic implementation of non-blocking linked-lists,'' in {\em International Symposium on Distributed Computing}, pp.~300--314, Springer, 2001.
+
+\bibitem{10.1145/2486159.2486184}
+A.~Braginsky, A.~Kogan, and E.~Petrank, ``Drop the anchor: lightweight memory management for non-blocking data structures,'' in {\em Proceedings of the Twenty-Fifth Annual ACM Symposium on Parallelism in Algorithms and Architectures}, SPAA '13, (New York, NY, USA), p.~33–42, Association for Computing Machinery, 2013.
+
+\end{thebibliography}

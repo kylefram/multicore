@@ -1,0 +1,96 @@
+writer:
+        sub     sp, sp, #16
+        str     x0, [sp, #8]
+        ldr     x8, [sp, #8]
+        str     x8, [sp]
+        ldr     x8, [sp]
+        ldr     x9, [x8]
+        mov     w8, #1
+        stlr    w8, [x9]
+        dmb     ish
+        ldr     x9, [sp]
+        ldr     x9, [x9, #8]
+        stlr    w8, [x9]
+        mov     x0, xzr
+        add     sp, sp, #16
+        ret
+
+reader:
+        sub     sp, sp, #16
+        str     x0, [sp, #8]
+        ldr     x8, [sp, #8]
+        str     x8, [sp]
+        b       .LBB1_1
+.LBB1_1:
+        ldr     x8, [sp]
+        ldr     x8, [x8, #8]
+        ldar    w8, [x8]
+        cbnz    w8, .LBB1_3
+        b       .LBB1_2
+.LBB1_2:
+        b       .LBB1_1
+.LBB1_3:
+        dmb     ishld
+        mov     x0, xzr
+        add     sp, sp, #16
+        ret
+
+main:
+        sub     sp, sp, #112
+        stp     x29, x30, [sp, #96]
+        add     x29, sp, #96
+        mov     w8, wzr
+        str     w8, [sp, #44]
+        stur    wzr, [x29, #-4]
+        sub     x9, x29, #28
+        str     x9, [sp, #24]
+        stur    wzr, [x29, #-28]
+        sub     x8, x29, #32
+        str     x8, [sp, #32]
+        stur    wzr, [x29, #-32]
+        add     x3, sp, #48
+        str     x3, [sp, #8]
+        str     x9, [sp, #48]
+        str     x8, [sp, #56]
+        sub     x0, x29, #16
+        mov     x1, xzr
+        str     x1, [sp, #16]
+        adrp    x2, writer
+        add     x2, x2, :lo12:writer
+        bl      pthread_create
+        ldr     x3, [sp, #8]
+        ldr     x1, [sp, #16]
+        sub     x0, x29, #24
+        adrp    x2, reader
+        add     x2, x2, :lo12:reader
+        bl      pthread_create
+        ldr     x1, [sp, #16]
+        ldur    x0, [x29, #-16]
+        bl      pthread_join
+        ldr     x1, [sp, #16]
+        ldur    x0, [x29, #-24]
+        bl      pthread_join
+        ldr     x8, [sp, #24]
+        ldar    w1, [x8]
+        adrp    x0, .L.str
+        add     x0, x0, :lo12:.L.str
+        bl      printf
+        ldr     x8, [sp, #32]
+        ldar    w1, [x8]
+        adrp    x0, .L.str.1
+        add     x0, x0, :lo12:.L.str.1
+        bl      printf
+        ldur    x0, [x29, #-16]
+        bl      pthread_detach
+        ldur    x0, [x29, #-24]
+        bl      pthread_detach
+        ldr     w0, [sp, #44]
+        ldp     x29, x30, [sp, #96]
+        add     sp, sp, #112
+        ret
+
+.L.str:
+        .asciz  "x: %d\n"
+
+.L.str.1:
+        .asciz  "y: %d\n"

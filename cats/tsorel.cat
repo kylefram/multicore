@@ -1,0 +1,15 @@
+TSOREL
+(*relaxed total store order - branch from sc.cat by removing specific writes and reads *)
+(* Define the co and fr relation *)
+include "cos.cat"
+
+(* Group communication relations together *)
+let com = rf | fr | co
+(* writes to the same loc, and writes to reads *)
+let wr = po & (W * R)
+let ww = (po & (W*W)) \ loc
+let ppo = po \ (wr | ww)
+
+(* Sequential consistency condition *)
+acyclic ppo | com as sc
+

@@ -1,0 +1,25 @@
+\section{}
+\subsection{(45 min)}
+Forbidden by ARM ARM. 
+Consider \href{https://developer.arm.com/documentation/ddi0487/maa/-Part-B-The-AArch64-Application-Level-Architecture/-Chapter-B2-The-AArch64-Application-Level-Memory-Model/-B2-3-Ordering-requirements-defined-by-the-formal-concurrency-model/-B2-3-2-Intrinsic-Dependency-relations?lang=en}{B.2.3.2}. 
+The important note here is in the box: "This applies even in cases where the Intrinsic Data Dependency might be perceived to be a false dependency." 
+Further, this is a 'data dependency' as defined by \href{https://developer.arm.com/documentation/ddi0487/maa/-Part-B-The-AArch64-Application-Level-Architecture/-Chapter-B2-The-AArch64-Application-Level-Memory-Model/-B2-3-Ordering-requirements-defined-by-the-formal-concurrency-model/-B2-3-6-Dependency-relations?lang=en}{B.2.3.6},  
+and since this architecture respects data dependencies and coherence, the memory accesses must follow in strict order, and therefore $x=3$ is forbidden. 
+
+\subsection{(10 min)}
+RISC-V as per \href{https://docs.riscv.org/reference/isa/unpriv/rvwmo.html#17-1-1-3-preserved-program-order}{17.1.1.3}, rule 10 enforces PPO over data dependencies, 
+such that the $d:y=1$ read and corresponding $e:x=1$ write must be ordered after the $x=3$ write, and thus according to the 
+\href{https://docs.riscv.org/reference/isa/unpriv/mm-eplan.html#preserved-program-order-and-global-memory-order}{Load Value Axiom}, 
+would be 'latest' in global memory order and therefore $x=3$ must not be reachable in practice.
+
+
+\subsection{(20 min)}
+
+\begin{lstlisting}
+    diyone7 -arch AArch64 "Wse DMB.SYdWW Rfe DpDatadW" -name sub
+    % diyone7 -arch AArch64 "DMB.STdWW Rfe DMB.LDdRR Fre" -name S+fen+data-wsi 
+    rmem -model flat -interactive false -eager true sub.litmus > logs/q2/c_1.txt
+    herd7 sub.litmus > logs/q2/c_2.txt
+\end{lstlisting}
+
+TODO: Comment / sanity check

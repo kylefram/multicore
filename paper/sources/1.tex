@@ -1,0 +1,57 @@
+I have written the estimated time for each part in parentheses under subsection label. Generally, setting up diy and opam, as well as relearning a bit of C, made up the lion's share of the time.
+
+\section{} \label{}
+% details on diy7 etc 
+%https://diy.inria.fr/doc/gen.html#diycross%3Aintro 
+\subsection{(2 hours)}
+We use these commands to generate the tests:
+\begin{lstlisting}
+    diyone7 -arch AArch64 "PodWR Fre PodWR Fre" -name SB
+    diyone7 -arch AArch64 "PodWR Fre PodWR Fre PodWR Fre" -name SB3    
+    diyone7 -arch AArch64 "DMB.SYdWR Fre DMB.SYdWR Fre" -name SB+fen 
+    diyone7 -arch AArch64 "DMB.SYdWR Fre DMB.SYdWR Fre DMB.SYdWR Fre" -name SB3+fen
+\end{lstlisting}
+
+\subsection{(30 min)}
+
+Using -s 1k, -r 100k to get 1e8 for each case:
+
+\begin{lstlisting}
+    litmus7 SB.litmus -s 1k -r 100k > logs/q1/b_1.txt 
+    litmus7 SB+fen.litmus -s 1k -r 100k > logs/q1/b_1fen.txt     
+    litmus7 SB3.litmus -s 1k -r 100k > logs/q1/b_2.txt 
+    litmus7 SB3+fen.litmus -s 1k -r 100k > logs/q1/b_2fen.txt 
+\end{lstlisting}
+
+\subsection{(2 min)}
+\begin{lstlisting}
+    herd7 SB.litmus > logs/q1/c_1.txt 
+    herd7 SB3.litmus > logs/q1/c_1fen.txt  
+    herd7 SB+fen.litmus > logs/q1/c_2.txt
+    herd7 SB3+fen.litmus > logs/q1/c_2fen.txt
+\end{lstlisting}
+%https://www.cl.cam.ac.uk/~sf502/regressions/rmem/help.html
+
+\subsection{(30 min)}
+We use interactive -false and eager -true flags. 
+\begin{lstlisting}    
+    rmem -model flat -interactive false -eager true SB.litmus > logs/q1/d_1.txt
+    rmem -model flat -interactive false -eager true SB+fen.litmus > logs/q1/d_1fen.txt
+    rmem -model flat -interactive false -eager true SB3.litmus > logs/q1/d_2.txt      
+    rmem -model flat -interactive false -eager true SB3+fen.litmus > logs/q1/d_2fen.txt
+\end{lstlisting}
+
+\subsection{(20 min)}
+
+\begin{lstlisting}
+    mcompare7 logs/q1/b_1.txt logs/q1/c_1.txt > logs/q1/e_1.txt
+    mcompare7 logs/q1/b_1fen.txt logs/q1/c_1fen.txt > logs/q1/e_1fen.txt
+    mcompare7 logs/q1/b_2.txt logs/q1/c_2.txt > logs/q1/e_2.txt
+    mcompare7 logs/q1/b_2fen.txt logs/q1/c_2fen.txt > logs/q1/e_2fen.txt
+    
+\end{lstlisting}
+
+
+
+%LINK: 
+% https://www.cl.cam.ac.uk/~sf502/regressions/rmem/

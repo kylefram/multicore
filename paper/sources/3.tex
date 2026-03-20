@@ -1,0 +1,34 @@
+\section{}
+\subsection{(45 min)}
+% https://davekilian.com/acquire-release.html
+Consider a 'fence' operation. This provides a 'synchronization point,' such that all memory operations before and after the fence wait for all others, and once all operations meet at the fence, they tear it down. 
+Now, consider propping a ladder up on one side of the metaphorical fence. For an acquire or release, this synchronization is 'one-way,' so anyone on the far side cannot access until the last operation throws the ladder over the fence. 
+
+\subsection{(3 hrs)}
+I implemented Message Passing with pthreads and acquire/release semantics. 
+This program has a writer thread which writes two values in succession with a release between the writes, 
+and then a reader thread which reads those respectively with an acquire fence between them. 
+Pthreads only allows one arg so I wrapped the values in a struct. 
+The release/acquire semantics ensure that x=1,y=1 always holds at termination, but does not force the writer to wait for respective read. 
+
+\lstinputlisting[caption={MessagePassing}, label={lst:MP}]{../ctests/raq.c}
+
+\subsection{(5 min)}
+In a certain sense, this is consistent, we have DMB ISH for the release and DMB ISHLD for the acquire. 
+In another sense, this is redundant, as we are using atomics and the compiler uses stlr and ldar, which enforce sequential consistency anyhow. 
+Overall this is indeed consistent, albeit redundant. \newline
+Here is the compiled code (screenshots in appendix):
+
+\lstinputlisting[caption={Compiled MessagePassing}, label={lst:MPC}]{../logs/q3/raq.txt}
+
+\subsection{(10 min)}
+Litmus test of the above:
+\lstinputlisting[caption={MP with Release/Acquire Litmus}, label={lst:mpraq}]{../mpraq.litmus}
+
+\subsection{(15 min)}
+As above, we expect and see 'forbidden' here, we have this doubly redundant synchronization with fences and store-releases. 
+\begin{lstlisting}
+    cd ctests
+    herd7 ../mpraq.litmus > ../logs/q3/e.txt
+\end{lstlisting}
+\lstinputlisting[caption={Litmus Results (herd7)}, label={lst:MPC}]{../logs/q3/e.txt}

@@ -1,0 +1,52 @@
+\section{}
+\subsection{(2hr)}
+
+We define $ppo$ to be the communication relation without the 'writes to the same location' relation as a relaxation of x86-TSO. 
+
+\lstinputlisting{../cats/tsorel.cat}
+
+\subsection{(20min)}
+
+$S$ is a good test to verify our model due to its two writes to different memory locations. 
+We expect different results in our relaxed model vs. the standard x86-TSO model.
+
+\begin{lstlisting}
+    
+    diyone7 -arch AArch64 PodWW Rfe PodRW Wse -name S
+    herd7 S.litmus -model cats/tsorel.cat>> logs/q4/b1.txt
+    herd7 S.litmus > logs/q4/b2.txt 
+
+\end{lstlisting}
+
+Indeed we see that in the relaxed model, we sometimes see the 'reordered' outcome, where in TSO we never see this. 
+
+\lstinputlisting[caption={Litmus Results (herd7) (PPO Model)}, label={lst:tsorel}]{../logs/q4/b1.txt}
+\lstinputlisting[caption={Litmus Results (herd7) (x86 TSO Model)}, label={lst:tsorel}]{../logs/q4/b2.txt}
+
+\subsection{(30 min)}
+Here is the paper math definition of the relaxed model based on the x86-tso model referenced in \cite{alglave2014herding}:
+
+Starting from the definitions in the notes and slides:
+
+
+\begin{flalign*}
+E &= \{e \mid e \in \{e_1, \dots, e_n\} \land (\text{iswrite}(e) \lor \text{isread}(e))\} & \\
+\text{po} &= \{(e, e') \mid e \in E \land e' \in E \land e < e' \land \text{thread}(e) = \text{thread}(e')\} & \\
+\text{wr} &= \text{po} \land (\text{iswrite}(e) \land \text{isread}(e')) & \\
+\text{ww} &= \text{po} \land \text{iswrite}(e) \land \text{iswrite}(e') \land (\text{addr}(e) \neq \text{addr}(e')) & \\
+\text{ppo} &= \text{po} \setminus (\text{ww} \lor \text{wr}) & \\
+\text{acyclic}& (\text{ppo} \mid \text{com}) \text{as } \text{sc} &
+\end{flalign*}
+
+
+\subsection{(1 min)}
+
+C allows for this sort of relaxation natively with stdatomic and memory\_order\_relaxed.
+If these are executed with memory\_order\_relaxed on ARM for example, two writes to different locations may be reordered. 
+
+\subsection{(5 min)}
+
+Arbitrarily reordering of reads from different locations may be more tricky. 
+Take Message Passing for example, arbitrary reordering of reads of different locations effectively 
+breaks any notion of intrathread communication, and fencing, reliance on atomicity, or at least acquire/release must be used often. 
+Realistically, a language without fences, barriers, or sequential reads becomes chaos. 
