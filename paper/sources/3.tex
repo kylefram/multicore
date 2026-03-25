@@ -11,15 +11,17 @@ and then a reader thread which reads those respectively with an acquire fence be
 Pthreads only allows one arg so I wrapped the values in a struct. 
 The release/acquire semantics ensure that x=1,y=1 always holds at termination, but does not force the writer to wait for respective read. 
 
-\lstinputlisting[caption={MessagePassing}, label={lst:MP}]{../ctests/raq.c}
+\lstinputlisting[caption={MessagePassing}, label={lst:MP}]{../ctests/raq2.c}
 
 \subsection{(5 min)}
 In a certain sense, this is consistent, we have DMB ISH for the release and DMB ISHLD for the acquire. 
 In another sense, this is redundant, as we are using atomics and the compiler uses stlr and ldar, which enforce sequential consistency anyhow. 
 Overall this is indeed consistent, albeit redundant. \newline
-Here is the compiled code (screenshots in appendix):
+Here is the compiled code (full compilation in appendix):\newline
 
-\lstinputlisting[caption={Compiled MessagePassing}, label={lst:MPC}]{../logs/q3/raq.txt}
+\includegraphics[width=8cm]{../logs/q3/images/reader2.png}\newline
+\includegraphics[width=8cm]{../logs/q3/images/writer2.png}\newline
+\includegraphics[width=8cm]{../logs/q3/images/main2.png}
 
 \subsection{(10 min)}
 Litmus test of the above:

@@ -22,6 +22,7 @@ void* reader(void *arg)
     struct targs *args = (struct targs *)arg;
 
     while (*(args->y) == 0);
+    
     atomic_thread_fence(memory_order_acquire);
 
     return NULL;

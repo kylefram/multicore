@@ -12,7 +12,22 @@ We use these commands to generate the tests:
     diyone7 -arch AArch64 "DMB.SYdWR Fre DMB.SYdWR Fre DMB.SYdWR Fre" -name SB3+fen
 \end{lstlisting}
 
+'SB3' is my shorthand for Store Buffering with 3 threads. 
+I am on an M4 Max chip (AArch64), and I expect to observe significant relaxations in the unfenced SB and SB3 tests.
+
+\lstinputlisting[caption={System Specs}, label={lst:specs}]{../logs/q1/sys_summary.txt}
+
 \subsection{(30 min)}
+
+Running with litmus7, we notice 7.7 and 9.4 seconds to run SB with and without barrier respectively. 
+As expecteed, the test condition is not validated in the fenced case, but is in the unfenced case.
+
+For SB3, we see 10.4 and 12.4 seconds respectively, a slightly higher percentage difference (81\% vs 83\%). 
+We see the expected fenced vs unfenced results. 
+
+Another curious difference is that while unfenced SB has only 234 out of 1e8 iterations validating the test condition, SB3 has 1870409 out of 1e8 iterations validating the test condition.
+We may see more prevalent compiler optimization and reordering in the latter case with more threads, 
+possibly the extra thread results in more optimization opportunities.
 
 Using -s 1k, -r 100k to get 1e8 for each case:
 
@@ -23,7 +38,12 @@ Using -s 1k, -r 100k to get 1e8 for each case:
     litmus7 SB3+fen.litmus -s 1k -r 100k > logs/q1/b_2fen.txt 
 \end{lstlisting}
 
+
 \subsection{(2 min)}
+
+Comparing the axiomatic results, we naturally notice no difference in timing. 
+However we notice the expected difference in the results, with our test condition missing from possible outputs in the fenced cases. 
+
 \begin{lstlisting}
     herd7 SB.litmus > logs/q1/c_1.txt 
     herd7 SB3.litmus > logs/q1/c_1fen.txt  
@@ -34,6 +54,7 @@ Using -s 1k, -r 100k to get 1e8 for each case:
 
 \subsection{(30 min)}
 We use interactive -false and eager -true flags. 
+In both cases, the fenced version notes 'allowed not found'  agreeing with prior analaysis. 
 \begin{lstlisting}    
     rmem -model flat -interactive false -eager true SB.litmus > logs/q1/d_1.txt
     rmem -model flat -interactive false -eager true SB+fen.litmus > logs/q1/d_1fen.txt
@@ -42,7 +63,7 @@ We use interactive -false and eager -true flags.
 \end{lstlisting}
 
 \subsection{(20 min)}
-
+Again, we reinforced the expected results from the above. 
 \begin{lstlisting}
     mcompare7 logs/q1/b_1.txt logs/q1/c_1.txt > logs/q1/e_1.txt
     mcompare7 logs/q1/b_1fen.txt logs/q1/c_1fen.txt > logs/q1/e_1fen.txt
@@ -50,7 +71,6 @@ We use interactive -false and eager -true flags.
     mcompare7 logs/q1/b_2fen.txt logs/q1/c_2fen.txt > logs/q1/e_2fen.txt
     
 \end{lstlisting}
-
 
 
 %LINK: 

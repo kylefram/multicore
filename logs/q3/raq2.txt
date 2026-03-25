@@ -1,0 +1,88 @@
+writer:
+        sub     sp, sp, #32
+        str     x0, [sp, #24]
+        ldr     x8, [sp, #24]
+        str     x8, [sp, #16]
+        ldr     x8, [sp, #16]
+        ldr     x9, [x8]
+        mov     w8, #1
+        str     w8, [x9]
+        ldr     x9, [sp, #16]
+        ldr     x9, [x9, #8]
+        str     w8, [sp, #12]
+        ldr     w8, [sp, #12]
+        stlr    w8, [x9]
+        mov     x0, xzr
+        add     sp, sp, #32
+        ret
+
+reader:
+        sub     sp, sp, #48
+        stp     x29, x30, [sp, #32]
+        add     x29, sp, #32
+        stur    x0, [x29, #-8]
+        ldur    x8, [x29, #-8]
+        str     x8, [sp, #16]
+        b       .LBB1_1
+.LBB1_1:
+        ldr     x8, [sp, #16]
+        ldr     x8, [x8, #8]
+        ldar    w8, [x8]
+        str     w8, [sp, #12]
+        ldr     w8, [sp, #12]
+        cbnz    w8, .LBB1_3
+        b       .LBB1_2
+.LBB1_2:
+        b       .LBB1_1
+.LBB1_3:
+        ldr     x8, [sp, #16]
+        ldr     x8, [x8]
+        ldr     w1, [x8]
+        adrp    x0, .L.str
+        add     x0, x0, :lo12:.L.str
+        bl      printf
+        mov     x0, xzr
+        ldp     x29, x30, [sp, #32]
+        add     sp, sp, #48
+        ret
+
+main:
+        sub     sp, sp, #96
+        stp     x29, x30, [sp, #80]
+        add     x29, sp, #80
+        mov     w8, wzr
+        str     w8, [sp, #28]
+        stur    wzr, [x29, #-4]
+        sub     x9, x29, #28
+        stur    wzr, [x29, #-28]
+        sub     x8, x29, #32
+        stur    wzr, [x29, #-32]
+        add     x3, sp, #32
+        str     x3, [sp, #8]
+        str     x9, [sp, #32]
+        str     x8, [sp, #40]
+        sub     x0, x29, #16
+        mov     x1, xzr
+        str     x1, [sp, #16]
+        adrp    x2, writer
+        add     x2, x2, :lo12:writer
+        bl      pthread_create
+        ldr     x3, [sp, #8]
+        ldr     x1, [sp, #16]
+        sub     x0, x29, #24
+        adrp    x2, reader
+        add     x2, x2, :lo12:reader
+        bl      pthread_create
+        ldr     x1, [sp, #16]
+        ldur    x0, [x29, #-16]
+        bl      pthread_join
+        ldr     x1, [sp, #16]
+        ldur    x0, [x29, #-24]
+        bl      pthread_join
+        ldr     w0, [sp, #28]
+        ldp     x29, x30, [sp, #80]
+        add     sp, sp, #96
+        ret
+
+.L.str:
+        .asciz  "read x: %d\n"

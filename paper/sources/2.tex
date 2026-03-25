@@ -2,7 +2,8 @@
 \subsection{(45 min)}
 Forbidden by ARM ARM. 
 Consider \href{https://developer.arm.com/documentation/ddi0487/maa/-Part-B-The-AArch64-Application-Level-Architecture/-Chapter-B2-The-AArch64-Application-Level-Memory-Model/-B2-3-Ordering-requirements-defined-by-the-formal-concurrency-model/-B2-3-2-Intrinsic-Dependency-relations?lang=en}{B.2.3.2}. 
-The important note here is in the box: "This applies even in cases where the Intrinsic Data Dependency might be perceived to be a false dependency." 
+The important note here is in the Note box: 
+"This applies even in cases where the Intrinsic Data Dependency might be perceived to be a false dependency." 
 Further, this is a 'data dependency' as defined by \href{https://developer.arm.com/documentation/ddi0487/maa/-Part-B-The-AArch64-Application-Level-Architecture/-Chapter-B2-The-AArch64-Application-Level-Memory-Model/-B2-3-Ordering-requirements-defined-by-the-formal-concurrency-model/-B2-3-6-Dependency-relations?lang=en}{B.2.3.6},  
 and since this architecture respects data dependencies and coherence, the memory accesses must follow in strict order, and therefore $x=3$ is forbidden. 
 
@@ -15,11 +16,14 @@ would be 'latest' in global memory order and therefore $x=3$ must not be reachab
 
 \subsection{(20 min)}
 
+As per the above, on AArch64, the test is forbidden and we see axiomatically this is reinforced. 
+We also ran 1e8 litmus tests and saw no positive witnesses, enforcing our result empirically. 
+
+%    diyone7 -arch AArch64 "DMB.STdWW Rfe DMB.LDdRR Fre" -name S+fen+data-wsi 
 \begin{lstlisting}
     diyone7 -arch AArch64 "Wse DMB.SYdWW Rfe DpDatadW" -name sub
-    % diyone7 -arch AArch64 "DMB.STdWW Rfe DMB.LDdRR Fre" -name S+fen+data-wsi 
     rmem -model flat -interactive false -eager true sub.litmus > logs/q2/c_1.txt
-    herd7 sub.litmus > logs/q2/c_2.txt
+    herd7 sub.litmus > logs/q2/c.txt
 \end{lstlisting}
 
-TODO: Comment / sanity check
+\lstinputlisting{../logs/q2/c.txt}

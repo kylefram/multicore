@@ -23,26 +23,40 @@ Indeed we see that in the relaxed model, we sometimes see the 'reordered' outcom
 \lstinputlisting[caption={Litmus Results (herd7) (PPO Model)}, label={lst:tsorel}]{../logs/q4/b1.txt}
 \lstinputlisting[caption={Litmus Results (herd7) (x86 TSO Model)}, label={lst:tsorel}]{../logs/q4/b2.txt}
 
-\subsection{(30 min)}
-Here is the paper math definition of the relaxed model based on the x86-tso model referenced in \cite{alglave2014herding}:
+\subsection{(1.5 hr)}
+Here is the paper math definition of the relaxed model based on the x86-tso model referenced in \cite{alglave2014herding} and the notes.
+I have removed MFENCE and LOCK for clarity. 
+$\mathbf{RB}$ and $\mathbf{RM}$ are unchanged, we include $\mathbf{WB}$ definitions and keep the model from the notes otherwise unchanged.
+Crucially, we partition the write buffer into a 'skipped' and a 'rest' queue to allow for arbitrary reordering of writes to different locations,
+ but we still require that writes to the same location are ordered.
 
-Starting from the definitions in the notes and slides:
-
+% operational model (not axiomatic)
+%\begin{flalign*}
+%E &= \{e \mid e \in \{e_1, \dots, e_n\} \land (\text{iswrite}(e) \lor \text{isread}(e))\} & \\
+%\text{po} &= \{(e, e') \mid e \in E \land e' \in E \land e < e' \land \text{thread}(e) = \text{thread}(e')\} & \\
+%\text{wr} &= \text{po} \land (\text{iswrite}(e) \land \text{isread}(e')) & \\
+%\text{ww} &= \text{po} \land \text{iswrite}(e) \land \text{iswrite}(e') \land (\text{addr}(e) \neq \text{addr}(e')) & \\
+%\text{ppo} &= \text{po} \setminus (\text{ww} \lor \text{wr}) & \\
+%\text{acyclic}& (\text{ppo} \mid \text{com}) \text{as } \text{sc} &
+%\end{flalign*}
 
 \begin{flalign*}
-E &= \{e \mid e \in \{e_1, \dots, e_n\} \land (\text{iswrite}(e) \lor \text{isread}(e))\} & \\
-\text{po} &= \{(e, e') \mid e \in E \land e' \in E \land e < e' \land \text{thread}(e) = \text{thread}(e')\} & \\
-\text{wr} &= \text{po} \land (\text{iswrite}(e) \land \text{isread}(e')) & \\
-\text{ww} &= \text{po} \land \text{iswrite}(e) \land \text{iswrite}(e') \land (\text{addr}(e) \neq \text{addr}(e')) & \\
-\text{ppo} &= \text{po} \setminus (\text{ww} \lor \text{wr}) & \\
-\text{acyclic}& (\text{ppo} \mid \text{com}) \text{as } \text{sc} &
+\text{Events} \quad e \quad &\mid \quad a:t:\text{W } x=v  \\
+&\mid \quad a:t:\text{R } x=v \\
+&\mid \quad a:t:\text{Dw } x=v  \\
+\text{Memory}\quad  m\quad & \mid \langle M : \text{addr} \to \text{value} \\
+              &\mid \quad B : \text{tid}  \to \text{write\_event list} \rangle \\
+\text{Operations} \quad o \quad &\mid \quad \mathbf{WB} : m.B(t) = b_{skipped} \mathrel{@} b_{rest} \quad \forall (\dots \text{W } y=v') \in b_{skipped} \ldotp y \neq x \\
+&\mid  \quad \quad m \xrightarrow{a:t:\text{W } x=v} m \oplus \langle B := m.B \oplus (t \mapsto (b_{skipped} \mathrel{@} [a:t:\text{W } x=v] \mathrel{@} b_{rest})) \rangle 
 \end{flalign*}
+
 
 
 \subsection{(1 min)}
 
 C allows for this sort of relaxation natively with stdatomic and memory\_order\_relaxed.
 If these are executed with memory\_order\_relaxed on ARM for example, two writes to different locations may be reordered. 
+If we wanted to use C 'as it is expected,' the compiler would need to enforce fencing between writes to ensure sequential consistency. 
 
 \subsection{(5 min)}
 

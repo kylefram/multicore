@@ -1,0 +1,83 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Results for sub.litmus %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+AArch64 sub
+"Coe DMB.SYdWW Rfe DpDatadW"
+
+{
+ 0:X1=x; 0:X3=y;
+ 1:X0=y; 1:X3=x;
+}
+ P0          | P1           ;
+ MOV W0,#2   | LDR W1,[X0]  ;
+ STR W0,[X1] | EOR W2,W1,W1 ;
+ DMB SY      | ADD W2,W2,#1 ;
+ MOV W2,#1   | STR W2,[X3]  ;
+ STR W2,[X3] |              ;
+
+exists ([x]=2 /\ 1:X1=1)
+Generated assembler
+	;START _litmus_P0
+	mov	w16, #2                         ; =0x2
+	str	w16, [x14]
+	dmb	sy
+	mov	w15, #1                         ; =0x1
+	str	w15, [x13]
+	;START _litmus_P1
+	ldr	w17, [x15]
+	eor	w0, w17, w17
+	add	w0, w0, #1
+	str	w0, [x16]
+
+Test sub Allowed
+Histogram (3 states)
+19    :>1:X1=0; [x]=1;
+499982:>1:X1=1; [x]=1;
+499999:>1:X1=0; [x]=2;
+No
+
+Witnesses
+Positive: 0, Negative: 1000000
+Condition exists ([x]=2 /\ 1:X1=1) is NOT validated
+Hash=5f7433ab67b974a2b8b770016ff25387
+Generator=diyone7 (version 7.58)
+Com=Rf Co
+Orig=Coe DMB.SYdWW Rfe DpDatadW
+Observation sub Never 0 1000000
+Time sub 0.08
+
+Machine:Kyles-MacBook-Pro.local
+Hardware:
+
+    Hardware Overview:
+
+      Model Name: MacBook Pro
+      Model Identifier: Mac16,5
+      Model Number: MX303B/A
+      Chip: Apple M4 Max
+      Total Number of Cores: 14 (10 performance and 4 efficiency)
+      Memory: 36 GB
+      System Firmware Version: 11881.81.4
+      OS Loader Version: 11881.81.4
+      Serial Number (system): C00C3JNQFV
+      Hardware UUID: 6B16ED3A-820B-5B1F-A79E-0B45691B2525
+      Provisioning UDID: 00006041-000849C90204801C
+      Activation Lock Status: Enabled
+
+Revision exported, version 7.58
+Command line: litmus7 sub.litmus
+Parameters
+#define SIZE_OF_TEST 100000
+#define NUMBER_OF_RUN 10
+#define AVAIL 1
+#define STRIDE (-1)
+#define MAX_LOOP 0
+/* gcc options: -Wall -std=gnu99 -O2 */
+/* barrier: user */
+/* launch: changing */
+/* affinity: none */
+/* memory: direct */
+/* safer: write */
+/* preload: random */
+/* speedcheck: no */
+/* alloc: dynamic */
